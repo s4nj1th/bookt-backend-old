@@ -8,13 +8,16 @@ export const searchBooks = async (
 ): Promise<void> => {
   try {
     const query = req.query.q as string;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+
     if (!query) {
-      res.status(400).json({ message: "Missing search query" });
+      res.status(400).json({ error: "Missing 'q' query parameter" });
       return;
     }
 
-    const books = await searchBooksOpenLibrary(query);
-    res.status(200).json(books);
+    const result = await searchBooksOpenLibrary(query, page, limit);
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }
